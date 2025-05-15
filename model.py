@@ -15,7 +15,7 @@ svm_model = joblib.load('svm_model.pkl')
 
 def preprocess(text):
     tokens = text.lower().split()
-    return tokens
+    return tokens   
 
 @app.route('/')
 def index():
@@ -38,6 +38,15 @@ def get_dataset():
     # Convert dataset ke list of dict
     dataset_json = dataset.to_dict(orient='records')
     return jsonify(dataset_json)
+@app.route('/dataset/before', methods=['GET'])
+def get_dataset_before():
+    selected_columns = dataset[['full_text']]
+    return jsonify(selected_columns.to_dict(orient='records'))
+
+@app.route('/dataset/after', methods=['GET'])
+def get_dataset_after():
+    selected_columns = dataset[['text_clean', 'stemmed_text', 'polarity']]
+    return jsonify(selected_columns.to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run(debug=True)
